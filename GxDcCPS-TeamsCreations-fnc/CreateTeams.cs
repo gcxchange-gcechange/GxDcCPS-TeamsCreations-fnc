@@ -73,7 +73,6 @@ namespace GxDcCPSTeamsCreationsfnc
             ClientContext ctx = new OfficeDevPnP.Core.AuthenticationManager().GetAppOnlyAuthenticatedContext(siteUrl, appOnlyId, appOnlySecret);
 
             UpdateNavigation(ctx, log, teamsUrl, displayName, "Conversations / Des conversations", 2);
-            //UpdateNavigation(ctx, log, teamsUrl, displayName, "request to join", 5);
             RemoveSitePage(ctx, log);
             RemoveUserFromSiteAdmin(ctx, log, groupId);
 
