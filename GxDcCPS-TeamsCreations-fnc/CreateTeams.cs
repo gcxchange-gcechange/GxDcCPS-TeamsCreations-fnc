@@ -72,8 +72,8 @@ namespace GxDcCPSTeamsCreationsfnc
 
             ClientContext ctx = new OfficeDevPnP.Core.AuthenticationManager().GetAppOnlyAuthenticatedContext(siteUrl, appOnlyId, appOnlySecret);
 
-            UpdateNavigation(ctx, log, teamsUrl, displayName, "microsoft teams", 4);
-            UpdateNavigation(ctx, log, teamsUrl, displayName, "request to join", 5);
+            UpdateNavigation(ctx, log, teamsUrl, displayName, "Conversations / Des conversations", 2);
+            //UpdateNavigation(ctx, log, teamsUrl, displayName, "request to join", 5);
             RemoveSitePage(ctx, log);
             RemoveUserFromSiteAdmin(ctx, log, groupId);
 
@@ -258,8 +258,11 @@ namespace GxDcCPSTeamsCreationsfnc
             contextNavigation.Load(navNode);
             contextNavigation.ExecuteQuery();
 
-            if (navNode.Title.ToLower().Contains(navigationNode))
+            log.Info($"Replacing {navNode.Title}.");
+
+            if (navNode.Title == navigationNode)
             {
+                log.Info($"Contains the link {navNode.Title}.");
                 nodeToCreate.PreviousNode = navNode;
                 nodeToCreate.Title = navNode.Title;
                 nodeToCreate.Url = teamsUrl;
