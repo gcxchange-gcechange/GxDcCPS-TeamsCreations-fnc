@@ -72,8 +72,8 @@ namespace GxDcCPSTeamsCreationsfnc
 
             ClientContext ctx = new OfficeDevPnP.Core.AuthenticationManager().GetAppOnlyAuthenticatedContext(siteUrl, appOnlyId, appOnlySecret);
 
-            UpdateNavigation(ctx, log, teamsUrl, displayName, "microsoft teams", 4);
-            UpdateNavigation(ctx, log, teamsUrl, displayName, "request to join", 5);
+            UpdateNavigation(ctx, log, teamsUrl, displayName, "Conversations", 2);
+            UpdateNavigation(ctx, log, teamsUrl, displayName, "Become a member / Devenez membre", 3);
             RemoveSitePage(ctx, log);
             RemoveUserFromSiteAdmin(ctx, log, groupId);
 
@@ -258,8 +258,11 @@ namespace GxDcCPSTeamsCreationsfnc
             contextNavigation.Load(navNode);
             contextNavigation.ExecuteQuery();
 
-            if (navNode.Title.ToLower().Contains(navigationNode))
+            log.Info($"Replacing {navNode.Title}.");
+
+            if (navNode.Title == navigationNode)
             {
+                log.Info($"Contains the link {navNode.Title}.");
                 nodeToCreate.PreviousNode = navNode;
                 nodeToCreate.Title = navNode.Title;
                 nodeToCreate.Url = teamsUrl;
@@ -315,6 +318,25 @@ namespace GxDcCPSTeamsCreationsfnc
             targetFile.DeleteObject();
             ctx.ExecuteQuery();
             log.Info("Remove site page successful.");
+        }
+        /// <summary>
+        /// Remove a feature from the site.
+        /// </summary>
+        /// <param name="ctx"></param>
+        /// <param name="log"></param>
+        public static void RemoveSiteFeature(ClientContext ctx, TraceWriter log, string featureId)
+        {
+
+            //Guid myFeatureDefinitionId = new Guid(featureId);
+            var feature = ctx.Site.Features.SingleOrDefault(sf => sf.DisplayName.Equals(featureId));
+            //var feature = ctx.Site.Features.SingleOrDefault(sf => sf.DefinitionId == myFeatureDefinitionId);
+            if (feature != null)//if feature is activated
+            {
+                log.Info($"Removing {feature.DisplayName}.");
+                ctx.Site.Features.Remove(feature.DefinitionId, true);//deactivate feature
+            }
+            ctx.ExecuteQuery();
+            log.Info("Remove site feature successful.");
         }
         /// <summary>
         /// Add top navigation bar to SharePoint Site.
