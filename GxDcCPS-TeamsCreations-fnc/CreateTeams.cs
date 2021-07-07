@@ -76,6 +76,7 @@ namespace GxDcCPSTeamsCreationsfnc
             UpdateNavigation(ctx, log, teamsUrl, displayName, "Become a member / Devenez membre", 3);
             RemoveSitePage(ctx, log);
             RemoveUserFromSiteAdmin(ctx, log, groupId);
+            RemoveSiteFeature(ctx, log, "a7a2793e-67cd-4dc1-9fd0-43f61581207a");
 
             var status = "Team Created";
             //   UpdateStatus(graphClient, log, itemId, "Team Created");
@@ -324,19 +325,17 @@ namespace GxDcCPSTeamsCreationsfnc
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="log"></param>
+        /// <param name="featureId"></param>
         public static void RemoveSiteFeature(ClientContext ctx, TraceWriter log, string featureId)
         {
-
-            //Guid myFeatureDefinitionId = new Guid(featureId);
-            var feature = ctx.Site.Features.SingleOrDefault(sf => sf.DisplayName.Equals(featureId));
-            //var feature = ctx.Site.Features.SingleOrDefault(sf => sf.DefinitionId == myFeatureDefinitionId);
-            if (feature != null)//if feature is activated
+            Web web = ctx.Web;
+            Guid featureGuid = new Guid(featureId);
+            if (web.IsFeatureActive(featureGuid))
             {
-                log.Info($"Removing {feature.DisplayName}.");
-                ctx.Site.Features.Remove(feature.DefinitionId, true);//deactivate feature
+                web.DeactivateFeature(featureGuid);
             }
             ctx.ExecuteQuery();
-            log.Info("Remove site feature successful.");
+            log.Info("Site feature deactivated.");
         }
         /// <summary>
         /// Add top navigation bar to SharePoint Site.
